@@ -1,0 +1,138 @@
+<!doctype html>
+<!--
+THESIS: The contents leaf of a reference manual: four colored divisions, each named by the testing habit it extends.
+OWN-WORLD: Sienna contents board; milk-acetate leaf with binder punches; division tabs in each Part's hue; pages listed with page numbers and a written / not-yet-written state.
+STORY: The reader sees the whole course, the SWE analogy each Part carries, and which pages exist, then opens one.
+FIRST VIEWPORT: Running head, condensed-caps title and dek, then Part 1's orange division tab with its page list.
+FORM: Boxed-software manual, acetate leaf over tab board (seed c0773c82); contents page as the division index.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contents · Mastering AI Evals: From Basics to Hands-On</title>
+  <meta name="description" content="Contents of a self-paced course on evaluating LLM applications: error analysis, heuristic metrics, LLM-as-a-Judge, golden datasets, CI, and online evals. Labs run locally in VS Code and the terminal.">
+  <link rel="stylesheet" href="assets/css/course.css">
+</head>
+<body data-part="contents">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <nav class="tab-rail" aria-label="Divisions of the manual">
+    <ol>
+      <li style="--extent: 3"><a class="tab" data-tab="contents" href="index.html" aria-current="page"><span class="tab-num">§</span><span class="tab-word">Contents</span></a></li>
+      <li style="--extent: 6"><a class="tab" data-tab="1" href="part1-1-mental-model.html"><span class="tab-num">1</span><span class="tab-word">Foundations</span></a></li>
+      <li style="--extent: 7"><a class="tab" data-tab="2" aria-disabled="true" title="Part 2 is not written yet"><span class="tab-num">2</span><span class="tab-word">Heuristic metrics</span></a></li>
+      <li style="--extent: 8"><a class="tab" data-tab="3" aria-disabled="true" title="Part 3 is not written yet"><span class="tab-num">3</span><span class="tab-word">LLM-as-a-Judge</span></a></li>
+      <li style="--extent: 8"><a class="tab" data-tab="4" aria-disabled="true" title="Part 4 is not written yet"><span class="tab-num">4</span><span class="tab-word">Golden sets &amp; CI</span></a></li>
+    </ol>
+  </nav>
+
+  <div class="volume">
+    <p class="spine-label" aria-hidden="true">Mastering AI Evals · Reference Manual · Rev. 2026.11</p>
+
+    <main class="leaf" id="main">
+      <header class="running-head">
+        <span>Mastering AI Evals · Contents</span>
+        <span class="folio">p. iii</span>
+      </header>
+
+      <div class="title-block">
+        <div class="part-mark" aria-hidden="true">§</div>
+        <div>
+          <h1>Mastering AI Evals: From Basics to Hands-On</h1>
+          <p class="dek">A self-paced manual for software engineers who test code for a living and now need to test language models. Read the theory here; write and run every evaluation yourself in VS Code and the terminal. Nothing on these pages executes.</p>
+        </div>
+      </div>
+
+      <section class="section" aria-labelledby="how">
+        <h2 class="section-head" id="how">How to use this manual</h2>
+        <div class="section-body">
+          <p>Each Part opens with a mental model that maps its eval practice onto a software-testing habit you already have, then teaches the practice with cited sources. Each Part ends in a lab you build in a local folder called <code>evals-lab/</code>. The pages show code to copy; your terminal runs it.</p>
+          <p>Pages marked <i>not yet written</i> are planned and will be added in order.</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="divisions">
+        <h2 class="section-head" id="divisions">Divisions</h2>
+        <div class="section-body">
+          <ol class="contents-list wide">
+            <li class="division" data-tab="1">
+              <div class="division-tab">1 <small>Part</small></div>
+              <div>
+                <h3>Foundations &amp; Error Analysis</h3>
+                <p class="analogy">Vibe checking ≈ ad-hoc logging</p>
+                <ol>
+                  <li><span class="pg">1.1</span><a href="part1-1-mental-model.html">Mental Model Foundations</a><span class="state">written</span></li>
+                  <li><span class="pg">1.2</span><a href="part1-2-why-assertions-break.html">Why LLM outputs break assertions</a><span class="state">written</span></li>
+                  <li><span class="pg">1.3</span><span>A taxonomy of evals</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">1.4</span><span>Error analysis: open and axial coding</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">1.5</span><span>Anatomy of an agent run</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">Lab 1</span><span>Trace logging and hand-labeling</span><span class="state">not yet written</span></li>
+                </ol>
+              </div>
+            </li>
+            <li class="division" data-tab="2">
+              <div class="division-tab">2 <small>Part</small></div>
+              <div>
+                <h3>Heuristic &amp; Reference-Based Metrics</h3>
+                <p class="analogy">Heuristic evals ≈ unit tests</p>
+                <ol>
+                  <li><span class="pg">2.1</span><span>Mental model: metrics as unit tests</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">2.2</span><span>Deterministic checks</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">2.3</span><span>String and statistical matching metrics</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">2.4</span><span>Embedding and likelihood metrics</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">2.5</span><span>Code evals: pass@k</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">2.6</span><span>Deterministic agent and safety checks</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">Lab 2</span><span>Building an automated evaluation suite with PyTest</span><span class="state">not yet written</span></li>
+                </ol>
+              </div>
+            </li>
+            <li class="division" data-tab="3">
+              <div class="division-tab">3 <small>Part</small></div>
+              <div>
+                <h3>LLM-as-a-Judge</h3>
+                <p class="analogy">LLM-as-a-Judge ≈ end-to-end integration tests</p>
+                <ol>
+                  <li><span class="pg">3.1</span><span>Mental model: judges as E2E tests</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">3.2</span><span>Grading modes and judge biases</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">3.3</span><span>G-Eval and rubric design</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">3.4</span><span>Judging agents and conversations</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">3.5</span><span>Validating the judge</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">3.6</span><span>RAG metrics</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">3.7</span><span>Safety judges</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">Lab 3</span><span>A calibrated judge with Ollama</span><span class="state">not yet written</span></li>
+                </ol>
+              </div>
+            </li>
+            <li class="division" data-tab="4">
+              <div class="division-tab">4 <small>Part</small></div>
+              <div>
+                <h3>Golden Datasets, CI &amp; Production</h3>
+                <p class="analogy">Golden datasets ≈ CI/CD regression suites</p>
+                <ol>
+                  <li><span class="pg">4.1</span><span>Mental model: golden sets as regression suites</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">4.2</span><span>Building golden and synthetic datasets</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">4.3</span><span>Statistics for eval results</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">4.4</span><span>Non-determinism and repeated runs</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">4.5</span><span>Red-team regression suites</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">4.6</span><span>Online evals and OpenTelemetry</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">4.7</span><span>The tooling landscape</span><span class="state">not yet written</span></li>
+                  <li><span class="pg">Lab 4</span><span>Capstone: an eval gate in CI</span><span class="state">not yet written</span></li>
+                </ol>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <footer class="page-turn">
+        <nav aria-label="Page turn">
+          <span></span>
+          <a class="turn" href="part1-1-mental-model.html"><span class="turn-dir">Next →</span>1.1 Mental Model Foundations</a>
+        </nav>
+      </footer>
+      <p class="colophon">Set in Archivo, EB Garamond, and JetBrains Mono, each under the SIL Open Font License (see assets/fonts/). Works offline from file://.</p>
+    </main>
+  </div>
+</body>
+</html>

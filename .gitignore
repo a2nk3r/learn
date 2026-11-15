@@ -1,0 +1,15 @@
+# Operating-system clutter (at any depth)
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Temporary editor files
+*.swp
+*.swo
+*~
+
+# Impeccable runtime files; preserve design.json
+**/.impeccable/hook.cache.json
+**/.impeccable/questions/*.log
+**/.impeccable/questions/*.state.json

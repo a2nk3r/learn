@@ -1,0 +1,345 @@
+<!doctype html>
+<!--
+THESIS: Page 1.2 of the tabbed reference manual; it proves the assertion problem in code and math instead of restating it.
+OWN-WORLD: Oxide-orange Part 1 board; milk-acetate leaf with binder punches; fore-edge tab rail; ruled tables, numbered MathML equations, folds for derivations and expected output.
+STORY: The engineer watches three assertion styles misjudge four answers, sees sampling turn one prompt into a distribution, computes why one green run proves little, and maps oracle-free SWE techniques onto evals before running the demo in VS Code.
+FIRST VIEWPORT: Running head p. 1.2; orange "1" part mark beside the condensed-caps title and dek; tab rail with Part 1 extended and punched.
+FORM: Boxed-software manual, acetate leaf over tab board (seed c0773c82); staging: hanging margin heads, results table, equations as numbered display lines.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1.2 Why LLM Outputs Break Assertions · Mastering AI Evals</title>
+  <meta name="description" content="Part 1, page 1.2: how exact, normalized, and substring assertions misjudge language output; how sampling makes outputs a distribution; why one passing run is weak evidence; and which oracle-free testing techniques carry over to evals.">
+  <link rel="stylesheet" href="assets/css/course.css">
+</head>
+<body data-part="1">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <nav class="tab-rail" aria-label="Divisions of the manual">
+    <ol>
+      <li style="--extent: 3"><a class="tab" data-tab="contents" href="index.html"><span class="tab-num">§</span><span class="tab-word">Contents</span></a></li>
+      <li style="--extent: 6"><a class="tab" data-tab="1" href="part1-1-mental-model.html" aria-current="true"><span class="tab-num">1</span><span class="tab-word">Foundations</span></a></li>
+      <li style="--extent: 7"><a class="tab" data-tab="2" aria-disabled="true" title="Part 2 is not written yet"><span class="tab-num">2</span><span class="tab-word">Heuristic metrics</span></a></li>
+      <li style="--extent: 8"><a class="tab" data-tab="3" aria-disabled="true" title="Part 3 is not written yet"><span class="tab-num">3</span><span class="tab-word">LLM-as-a-Judge</span></a></li>
+      <li style="--extent: 8"><a class="tab" data-tab="4" aria-disabled="true" title="Part 4 is not written yet"><span class="tab-num">4</span><span class="tab-word">Golden sets &amp; CI</span></a></li>
+    </ol>
+  </nav>
+
+  <div class="volume">
+    <p class="spine-label" aria-hidden="true">Mastering AI Evals · Reference Manual · Rev. 2026.11</p>
+
+    <article class="leaf" id="main">
+      <header class="running-head">
+        <span><a href="index.html">Mastering AI Evals</a> · Part 1<span class="rh-desc"> · Foundations &amp; Error Analysis</span></span>
+        <span class="folio">p. 1.2</span>
+      </header>
+
+      <div class="title-block">
+        <div class="part-mark" aria-hidden="true">1</div>
+        <div>
+          <h1>Why LLM Outputs Break Assertions</h1>
+          <p class="dek">Page 1.1 named the problem. This page shows it failing in code: three assertion styles misjudging four answers, a sampler that turns one prompt into a distribution, the arithmetic of why one green run proves little, and the testing techniques software engineering already built for programs with no single correct output.</p>
+        </div>
+      </div>
+
+      <section class="section" aria-labelledby="s-1-2-1">
+        <h2 class="section-head" id="s-1-2-1"><span class="sec-num">1.2.1</span>Three assertions, four answers</h2>
+        <div class="section-body">
+          <p>Ask a model <q>What is the capital of France?</q> and suppose it returns one of the four outputs below. Three are correct; the fourth is wrong. Now grade them with the three assertions an engineer reaches for first: exact equality, equality after normalizing case and punctuation, and a substring check.</p>
+
+          <div class="table-wrap wide" role="region" aria-labelledby="table-2-caption" tabindex="0">
+            <table class="ruled">
+              <caption id="table-2-caption"><b>Table 2.</b> Verdicts from <code>assertions_demo.py</code> (§1.2.5) against the reference <code>"Paris"</code>. A ✗ marks a verdict that disagrees with the truth. The outputs are written for this demonstration, not sampled from a model.</caption>
+              <thead>
+                <tr>
+                  <th scope="col" style="width: 40%">Model output</th>
+                  <th scope="col" style="width: 12%">Truth</th>
+                  <th scope="col" style="width: 16%"><code>exact</code></th>
+                  <th scope="col" style="width: 16%"><code>normalized</code></th>
+                  <th scope="col" style="width: 16%"><code>contains</code></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row"><q>Paris</q></th><td data-label="Truth">correct</td><td data-label="exact">pass</td><td data-label="normalized">pass</td><td data-label="contains">pass</td></tr>
+                <tr><th scope="row"><q>The capital of France is Paris.</q></th><td data-label="Truth">correct</td><td data-label="exact">fail ✗</td><td data-label="normalized">fail ✗</td><td data-label="contains">pass</td></tr>
+                <tr><th scope="row"><q>It's Paris.</q></th><td data-label="Truth">correct</td><td data-label="exact">fail ✗</td><td data-label="normalized">fail ✗</td><td data-label="contains">pass</td></tr>
+                <tr><th scope="row"><q>The capital of France is not Paris.</q></th><td data-label="Truth"><strong>wrong</strong></td><td data-label="exact">fail</td><td data-label="normalized">fail</td><td data-label="contains">pass ✗</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Read the columns as two failure modes you already know from testing. <code>exact</code> and <code>normalized</code> produce <em>false negatives</em>: they reject two correct answers because the characters differ. <code>contains</code> produces a <em>false positive</em>: it accepts an answer that says the opposite, because the word it looks for is present.</p>
+          <p>Tightening the check trades one error for the other. No string rule on this page fixes both, because the property you care about is meaning, and meaning is not a property of the character sequence alone. The rest of the course replaces <q>equal to</q> with three better questions: how close to a reference (Part&nbsp;2), how good according to a rubric (Part&nbsp;3), and how often across many inputs and runs (Part&nbsp;4).</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="s-1-2-2">
+        <h2 class="section-head" id="s-1-2-2"><span class="sec-num">1.2.2</span>One prompt, a distribution of outputs</h2>
+        <div class="section-body">
+          <p>A language model does not compute an answer; it computes, at every step, a probability for each possible next token, then a decoder picks one. The final layer turns a vector of scores (logits) <math><msub><mi>z</mi><mi>i</mi></msub></math> into probabilities with a softmax, usually scaled by a temperature <math><mi>T</mi></math>, written by Hinton et&nbsp;al. as:&#8288;<a class="cite" href="#ref-1" aria-label="Reference 1">[1]</a></p>
+
+          <div class="equation">
+            <math display="block" aria-label="q sub i equals exp of z sub i over T, divided by the sum over j of exp of z sub j over T">
+              <msub><mi>q</mi><mi>i</mi></msub><mo>=</mo>
+              <mfrac>
+                <mrow><mi>exp</mi><mo stretchy="false">(</mo><msub><mi>z</mi><mi>i</mi></msub><mo>/</mo><mi>T</mi><mo stretchy="false">)</mo></mrow>
+                <mrow><munder><mo>∑</mo><mi>j</mi></munder><mi>exp</mi><mo stretchy="false">(</mo><msub><mi>z</mi><mi>j</mi></msub><mo>/</mo><mi>T</mi><mo stretchy="false">)</mo></mrow>
+              </mfrac>
+            </math>
+            <span class="eq-num">(1)</span>
+          </div>
+          <p class="where-vars">where <math><msub><mi>q</mi><mi>i</mi></msub></math> is the probability of token <math><mi>i</mi></math> and <math><mi>T</mi></math> is normally set to 1. A higher <math><mi>T</mi></math> produces a softer, flatter distribution; as <math><mi>T</mi></math> approaches 0 the probability mass concentrates on the highest-scoring token, which is greedy decoding.</p>
+
+          <details class="fold">
+            <summary>Deeper: why <math><mi>T</mi><mo>→</mo><mn>0</mn></math> becomes greedy <span class="fold-meta" aria-hidden="true"></span></summary>
+            <div class="fold-body">
+              <p>Let <math><msub><mi>z</mi><mo>max</mo></msub></math> be the largest logit and assume it is unique. Divide the numerator and denominator of (1) by <math><mi>exp</mi><mo stretchy="false">(</mo><msub><mi>z</mi><mo>max</mo></msub><mo>/</mo><mi>T</mi><mo stretchy="false">)</mo></math>:</p>
+              <div class="equation">
+                <math display="block" aria-label="q sub i equals exp of z sub i minus z max over T, divided by the sum over j of exp of z sub j minus z max over T">
+                  <msub><mi>q</mi><mi>i</mi></msub><mo>=</mo>
+                  <mfrac>
+                    <mrow><mi>exp</mi><mo stretchy="false">(</mo><mo stretchy="false">(</mo><msub><mi>z</mi><mi>i</mi></msub><mo>−</mo><msub><mi>z</mi><mo>max</mo></msub><mo stretchy="false">)</mo><mo>/</mo><mi>T</mi><mo stretchy="false">)</mo></mrow>
+                    <mrow><munder><mo>∑</mo><mi>j</mi></munder><mi>exp</mi><mo stretchy="false">(</mo><mo stretchy="false">(</mo><msub><mi>z</mi><mi>j</mi></msub><mo>−</mo><msub><mi>z</mi><mo>max</mo></msub><mo stretchy="false">)</mo><mo>/</mo><mi>T</mi><mo stretchy="false">)</mo></mrow>
+                  </mfrac>
+                </math>
+                <span class="eq-num">(1′)</span>
+              </div>
+              <p>For every token other than the maximum, <math><msub><mi>z</mi><mi>i</mi></msub><mo>−</mo><msub><mi>z</mi><mo>max</mo></msub><mo>&lt;</mo><mn>0</mn></math>, so its term goes to 0 as <math><mi>T</mi><mo>→</mo><msup><mn>0</mn><mo>+</mo></msup></math>. The maximum's own term is <math><mi>exp</mi><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><mn>1</mn></math>, so its probability goes to 1. With a tie for the maximum, the mass splits evenly among the tied tokens instead. Inference engines special-case an exact 0 instead of dividing by zero; vLLM, for example, documents that a temperature of zero <q>means greedy sampling.</q>&#8288;<a class="cite" href="#ref-9" aria-label="Reference 9">[9]</a></p>
+            </div>
+          </details>
+
+          <p>Most decoders also truncate the distribution before sampling. Nucleus <span style="white-space: nowrap">(top-<math><mi>p</mi></math>)</span> sampling, from Holtzman et&nbsp;al., keeps the smallest set of tokens <math><msup><mi>V</mi><mrow><mo stretchy="false">(</mo><mi>p</mi><mo stretchy="false">)</mo></mrow></msup></math> whose probabilities reach <math><mi>p</mi></math>, then renormalizes over that set and samples from it:&#8288;<a class="cite" href="#ref-2" aria-label="Reference 2">[2]</a></p>
+
+          <div class="equation">
+            <math display="block" aria-label="the sum over x in V of p of P of x given x 1 through i minus 1 is at least p">
+              <munder><mo>∑</mo><mrow><mi>x</mi><mo>∈</mo><msup><mi>V</mi><mrow><mo stretchy="false">(</mo><mi>p</mi><mo stretchy="false">)</mo></mrow></msup></mrow></munder>
+              <mi>P</mi><mo stretchy="false">(</mo><mi>x</mi><mo>∣</mo><msub><mi>x</mi><mrow><mn>1</mn><mo>:</mo><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="false">)</mo><mo>≥</mo><mi>p</mi>
+            </math>
+            <span class="eq-num">(2)</span>
+          </div>
+
+          <p>An output is a sequence of these draws, and each draw conditions the next. So one prompt defines a probability distribution over whole outputs, and one run of your feature is one sample from it. As §1.1.1 showed, even greedy decoding is not reliably reproducible on production servers, so that holds at temperature&nbsp;0 too.</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="s-1-2-3">
+        <h2 class="section-head" id="s-1-2-3"><span class="sec-num">1.2.3</span>Why one green run proves little</h2>
+        <div class="section-body">
+          <p>Suppose each run of a test case fails with probability <math><mi>f</mi></math>, and runs are independent. Then the chance that <math><mi>n</mi></math> runs all pass is:</p>
+
+          <div class="equation">
+            <math display="block" aria-label="P of all n runs pass equals 1 minus f, to the power n">
+              <mi>P</mi><mo stretchy="false">(</mo><mtext>all&#xA0;</mtext><mi>n</mi><mtext>&#xA0;runs pass</mtext><mo stretchy="false">)</mo><mo>=</mo><msup><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>f</mi><mo stretchy="false">)</mo></mrow><mi>n</mi></msup>
+            </math>
+            <span class="eq-num">(3)</span>
+          </div>
+
+          <p>With a 5% failure rate, a single run passes 95% of the time. To give yourself a 95% chance of seeing at least one failure, you need <math><msup><mn>0.95</mn><mi>n</mi></msup><mo>≤</mo><mn>0.05</mn></math>, so <math><mi>n</mi><mo>≥</mo><mi>ln</mi><mspace width="0.1667em"/><mn>0.05</mn><mo>/</mo><mi>ln</mi><mspace width="0.1667em"/><mn>0.95</mn><mo>≈</mo><mn>58.4</mn></math>: that is 59 runs.</p>
+          <p>Turn it around. If you ran a case <math><mi>n</mi></math> times and saw zero failures, the one-sided 95% upper bound on its failure rate solves <math><msup><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msub><mi>p</mi><mi>u</mi></msub><mo stretchy="false">)</mo></mrow><mi>n</mi></msup><mo>=</mo><mn>0.05</mn></math>:</p>
+
+          <div class="equation">
+            <math display="block" aria-label="p sub u equals 1 minus 0.05 to the power 1 over n, approximately 3 over n">
+              <msub><mi>p</mi><mi>u</mi></msub><mo>=</mo><mn>1</mn><mo>−</mo><msup><mn>0.05</mn><mrow><mn>1</mn><mo>/</mo><mi>n</mi></mrow></msup><mo>≈</mo><mfrac><mn>3</mn><mi>n</mi></mfrac>
+            </math>
+            <span class="eq-num">(4)</span>
+          </div>
+          <p class="where-vars">The approximation uses <math><mo>−</mo><mi>ln</mi><mspace width="0.1667em"/><mn>0.05</mn><mo>≈</mo><mn>2.996</mn></math> and is known as the <em>rule of three</em>.&#8288;<a class="cite" href="#ref-3" aria-label="Reference 3">[3]</a> It is close for large <math><mi>n</mi></math>: at <math><mi>n</mi><mo>=</mo><mn>59</mn></math>, the exact bound is 0.0495 and <math><mn>3</mn><mo>/</mo><mi>n</mi></math> is 0.0508.</p>
+
+          <p>So 59 green runs only let you claim, at 95% confidence, that the failure rate is below about 5%. One green run tells you almost nothing about a 5% failure. The model behind both formulas is a coin with a fixed bias: independent runs and a constant failure probability. Response caching, fixed seeds, or a model update between runs break that model, which is one reason Part&nbsp;4 treats eval results as estimates with intervals.</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="s-1-2-4">
+        <h2 class="section-head" id="s-1-2-4"><span class="sec-num">1.2.4</span>Testing without an oracle</h2>
+        <div class="section-body">
+          <p>Software engineering met this problem long before LLMs. Barr et&nbsp;al. survey the ways testers automate an oracle: modelling, specifications, contract-driven development, and metamorphic testing. When none of these is adequate, the final source of oracle information remains the human.&#8288;<a class="cite" href="#ref-4" aria-label="Reference 4">[4]</a> Three of those ideas carry straight into evals.</p>
+
+          <h3>Property-based testing</h3>
+          <p>QuickCheck&#8288;<a class="cite" href="#ref-5" aria-label="Reference 5">[5]</a> and Python's Hypothesis&#8288;<a class="cite" href="#ref-6" aria-label="Reference 6">[6]</a> assert a property that must hold for every input, not one expected value. Language output has many properties you can check exactly, whatever the wording: it parses as JSON, matches a schema, cites only document IDs it was given, stays under a length limit, contains no email addresses. These become Part&nbsp;2's deterministic checks.</p>
+
+          <h3>Metamorphic testing</h3>
+          <p>Chen, Cheung, and Yiu proposed checking a <em>relation</em> between the outputs of related inputs when no single output can be verified.&#8288;<a class="cite" href="#ref-7" aria-label="Reference 7">[7]</a>&#8288;<a class="cite" href="#ref-8" aria-label="Reference 8">[8]</a> For an LLM feature: a paraphrased question should get the same answer; shuffling the order of retrieved passages should not change the answer; adding an irrelevant sentence to the prompt should not flip a classification. There is a catch the original technique did not face: deciding whether two language outputs are <q>the same</q> itself needs a metric or a judge.</p>
+
+          <h3>The human oracle</h3>
+          <p>Human judgment does not disappear; it moves. You spend it on labeling a sample and on calibrating automated graders against those labels, which is error analysis (page&nbsp;1.4) and judge validation (Part&nbsp;3).</p>
+
+          <div class="table-wrap wide" role="region" aria-labelledby="table-3-caption" tabindex="0">
+            <table class="ruled">
+              <caption id="table-3-caption"><b>Table 3.</b> What each familiar assertion becomes when the output is language.</caption>
+              <thead>
+                <tr>
+                  <th scope="col" style="width: 30%">In a unit test you write</th>
+                  <th scope="col" style="width: 52%">In an eval it becomes</th>
+                  <th scope="col" style="width: 18%">Taught in</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row"><code>assertEqual(out, expected)</code></th><td data-label="In an eval it becomes">A reference-based score with a threshold, or a rubric grade.</td><td data-label="Taught in"><span class="row-tab" data-tab="2">Part 2</span> <span class="row-tab" data-tab="3">Part 3</span></td></tr>
+                <tr><th scope="row">A property assertion</th><td data-label="In an eval it becomes">Unchanged: deterministic checks on format, schema, citations, length, and safety.</td><td data-label="Taught in"><span class="row-tab" data-tab="2">Part 2</span></td></tr>
+                <tr><th scope="row">A metamorphic relation</th><td data-label="In an eval it becomes">A consistency check across input variants, compared by a metric or a judge.</td><td data-label="Taught in"><span class="row-tab" data-tab="2">Part 2</span> <span class="row-tab" data-tab="3">Part 3</span></td></tr>
+                <tr><th scope="row">A snapshot test</th><td data-label="In an eval it becomes">A versioned golden dataset, scored with tolerance and reviewed on change.</td><td data-label="Taught in"><span class="row-tab" data-tab="4">Part 4</span></td></tr>
+                <tr><th scope="row">One green CI run</th><td data-label="In an eval it becomes">A pass rate over <var>n</var> runs and inputs, reported with an interval.</td><td data-label="Taught in"><span class="row-tab" data-tab="4">Part 4</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="s-1-2-5">
+        <h2 class="section-head" id="s-1-2-5"><span class="sec-num">1.2.5</span>Take it to VS Code</h2>
+        <div class="section-body">
+          <p>Reproduce Table&nbsp;2 and the 59-run result on your own machine. The script uses only the Python standard library, so no virtual environment is needed yet; Lab&nbsp;2 sets one up.</p>
+
+          <ol class="procedure">
+            <li>
+              <span class="step-title">Create the file</span>
+              <p class="where">VS Code · <code>evals-lab/</code> · Terminal</p>
+              <div class="listing">
+                <div class="listing-head"><span class="path">Terminal</span><span>zsh / bash</span></div>
+<pre><code><span class="prompt">$ </span>mkdir -p part1
+<span class="prompt">$ </span>code part1/assertions_demo.py</code></pre>
+              </div>
+              <p>Run these from the <code>evals-lab</code> folder you created on page&nbsp;1.1.</p>
+            </li>
+            <li>
+              <span class="step-title">Copy in the script</span>
+              <div class="listing">
+                <div class="listing-head"><span class="path">evals-lab/part1/assertions_demo.py</span><span>Python 3</span></div>
+<pre><code>"""Page 1.2: why string assertions misjudge language output."""
+import math
+import random
+import re
+
+# Part A: one question, four model outputs, three assertion styles.
+REFERENCE = "Paris"
+OUTPUTS = [
+    ("Paris", True),
+    ("The capital of France is Paris.", True),
+    ("It's Paris.", True),
+    ("The capital of France is not Paris.", False),
+]
+
+
+def exact(text: str) -&gt; bool:
+    return text == REFERENCE
+
+
+def normalized(text: str) -&gt; bool:
+    clean = re.sub(r"[^a-z0-9 ]", "", text.lower()).strip()
+    return clean == REFERENCE.lower()
+
+
+def contains(text: str) -&gt; bool:
+    return REFERENCE.lower() in text.lower()
+
+
+CHECKS = {"exact": exact, "normalized": normalized, "contains": contains}
+
+print(f"{'output':&lt;38}{'truth':&lt;7}" + "".join(f"{n:&lt;12}" for n in CHECKS))
+for text, truth in OUTPUTS:
+    row = f"{text:&lt;38}{'ok' if truth else 'WRONG':&lt;7}"
+    for check in CHECKS.values():
+        verdict = check(text)
+        mark = "pass" if verdict else "fail"
+        if verdict != truth:
+            mark += " ✗"
+        row += f"{mark:&lt;12}"
+    print(row)
+
+for name, check in CHECKS.items():
+    fn = sum(1 for t, ok in OUTPUTS if ok and not check(t))
+    fp = sum(1 for t, ok in OUTPUTS if not ok and check(t))
+    print(f"{name:&lt;11} false negatives: {fn}   false positives: {fp}")
+
+# Part B: a 5% failure rate hides behind a single green run.
+FAILURE_RATE = 0.05
+random.seed(7)
+runs = 10_000
+green = sum(random.random() &gt;= FAILURE_RATE for _ in range(runs))
+print(f"\nsingle runs that pass: {green / runs:.1%}")
+
+n = math.ceil(math.log(0.05) / math.log(1 - FAILURE_RATE))
+print(f"runs needed for a 95% chance of seeing at least one failure: {n}")
+
+exact_bound = 1 - 0.05 ** (1 / n)
+print(f"0 failures in {n} runs -&gt; 95% upper bound: {exact_bound:.4f} (rule of three: {3 / n:.4f})")</code></pre>
+              </div>
+            </li>
+            <li>
+              <span class="step-title">Run it from the terminal</span>
+              <div class="listing">
+                <div class="listing-head"><span class="path">Terminal</span><span>zsh / bash</span></div>
+<pre><code><span class="prompt">$ </span>python3 part1/assertions_demo.py</code></pre>
+              </div>
+              <details class="fold">
+                <summary>Compare with the expected output <span class="fold-meta" aria-hidden="true"></span></summary>
+                <div class="fold-body">
+                  <div class="listing">
+                    <div class="listing-head"><span class="path">Expected output</span><span>Python 3.15.0, macOS</span></div>
+<pre><code>output                                truth  exact       normalized  contains
+Paris                                 ok     pass        pass        pass
+The capital of France is Paris.       ok     fail ✗      fail ✗      pass
+It's Paris.                           ok     fail ✗      fail ✗      pass
+The capital of France is not Paris.   WRONG  fail        fail        pass ✗
+exact       false negatives: 2   false positives: 0
+normalized  false negatives: 2   false positives: 0
+contains    false negatives: 0   false positives: 1
+
+single runs that pass: 94.9%
+runs needed for a 95% chance of seeing at least one failure: 59
+0 failures in 59 runs -&gt; 95% upper bound: 0.0495 (rule of three: 0.0508)</code></pre>
+                  </div>
+                  <p>The 94.9% line is a simulation with a fixed seed; Python's <code>random.seed</code> makes it identical on every run. The other numbers are computed exactly.</p>
+                </div>
+              </details>
+            </li>
+            <li>
+              <span class="step-title">Predict, then change two lines</span>
+              <p>Before running again, write down your predictions in <code>notes/mental-model.md</code>:</p>
+              <p>(a) Add <code>("Paris is not the capital; Lyon is.", False)</code> to <code>OUTPUTS</code>. How many false positives will <code>contains</code> report? (b) Set <code>FAILURE_RATE = 0.01</code>. How many runs will you need?</p>
+              <details class="fold">
+                <summary>Check your predictions <span class="fold-meta" aria-hidden="true"></span></summary>
+                <div class="fold-body">
+                  <p>(a) Two: <code>contains</code> passes both wrong answers, while <code>exact</code> and <code>normalized</code> still report two false negatives and no false positives. (b) 299 runs, because <math><mi>ln</mi><mspace width="0.1667em"/><mn>0.05</mn><mo>/</mo><mi>ln</mi><mspace width="0.1667em"/><mn>0.99</mn><mo>≈</mo><mn>298.1</mn></math>. Zero failures in 299 runs gives an upper bound of 0.0100, where exact and rule-of-three agree to four decimals.</p>
+                </div>
+              </details>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="s-refs">
+        <h2 class="section-head" id="s-refs">References</h2>
+        <div class="section-body">
+          <details class="fold fold-refs" open>
+            <summary>Nine sources, checked against the originals on 2&nbsp;November&nbsp;2026 <span class="fold-meta" aria-hidden="true"></span></summary>
+            <div class="fold-body">
+          <ol class="refs">
+            <li id="ref-1"><span class="ref-num">[1]</span><span>G. Hinton, O. Vinyals, J. Dean. <q>Distilling the Knowledge in a Neural Network.</q> <i>NIPS 2014 Deep Learning Workshop.</i> <a href="https://arxiv.org/abs/1503.02531">arXiv:1503.02531</a>. Equation (1) is their Eq.&nbsp;1.</span></li>
+            <li id="ref-2"><span class="ref-num">[2]</span><span>A. Holtzman, J. Buys, L. Du, M. Forbes, Y. Choi. <q>The Curious Case of Neural Text Degeneration.</q> <i>ICLR 2020.</i> <a href="https://arxiv.org/abs/1904.09751">arXiv:1904.09751</a>. Equation (2) is their Eq.&nbsp;2.</span></li>
+            <li id="ref-3"><span class="ref-num">[3]</span><span>J. A. Hanley, A. Lippman-Hand. <q>If Nothing Goes Wrong, Is Everything All Right? Interpreting Zero Numerators.</q> <i>JAMA</i> 249(13):1743–1745, 1983. <a href="https://doi.org/10.1001/jama.1983.03330370053031">doi:10.1001/jama.1983.03330370053031</a>.</span></li>
+            <li id="ref-4"><span class="ref-num">[4]</span><span>E. T. Barr, M. Harman, P. McMinn, M. Shahbaz, S. Yoo. <q>The Oracle Problem in Software Testing: A Survey.</q> <i>IEEE Transactions on Software Engineering</i> 41(5):507–525, 2015. <a href="https://doi.org/10.1109/TSE.2014.2372785">doi:10.1109/TSE.2014.2372785</a>.</span></li>
+            <li id="ref-5"><span class="ref-num">[5]</span><span>K. Claessen, J. Hughes. <q>QuickCheck: A Lightweight Tool for Random Testing of Haskell Programs.</q> <i>Proc. ICFP 2000</i>, 268–279. <a href="https://doi.org/10.1145/351240.351266">doi:10.1145/351240.351266</a>.</span></li>
+            <li id="ref-6"><span class="ref-num">[6]</span><span>D. R. MacIver, Z. Hatfield-Dodds, et&nbsp;al. <q>Hypothesis: A New Approach to Property-Based Testing.</q> <i>Journal of Open Source Software</i> 4(43):1891, 2019. <a href="https://doi.org/10.21105/joss.01891">doi:10.21105/joss.01891</a>.</span></li>
+            <li id="ref-7"><span class="ref-num">[7]</span><span>T. Y. Chen, S. C. Cheung, S. M. Yiu. <q>Metamorphic Testing: A New Approach for Generating Next Test Cases.</q> Technical Report HKUST-CS98-01, Hong Kong University of Science and Technology, 1998. <a href="https://arxiv.org/abs/2002.12543">arXiv:2002.12543</a>.</span></li>
+            <li id="ref-8"><span class="ref-num">[8]</span><span>T. Y. Chen, F.-C. Kuo, H. Liu, P.-L. Poon, D. Towey, T. H. Tse, Z. Q. Zhou. <q>Metamorphic Testing: A Review of Challenges and Opportunities.</q> <i>ACM Computing Surveys</i> 51(1):1–27, 2018. <a href="https://doi.org/10.1145/3143561">doi:10.1145/3143561</a>.</span></li>
+            <li id="ref-9"><span class="ref-num">[9]</span><span>vLLM project. <code>SamplingParams.temperature</code> docstring, <code>vllm/sampling_params.py</code>. <a href="https://github.com/vllm-project/vllm/blob/main/vllm/sampling_params.py">github.com/vllm-project/vllm</a>, accessed 2&nbsp;November&nbsp;2026.</span></li>
+          </ol>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <footer class="page-turn">
+        <nav aria-label="Page turn">
+          <a class="turn" href="part1-1-mental-model.html"><span class="turn-dir">← Previous</span>1.1 Mental Model Foundations</a>
+          <span class="turn" aria-disabled="true"><span class="turn-dir">Next → not yet written</span>1.3 A taxonomy of evals</span>
+        </nav>
+      </footer>
+      <p class="colophon">Set in Archivo, EB Garamond, and JetBrains Mono, each under the SIL Open Font License (see assets/fonts/); equations in STIX Two Math from the operating system. Works offline from file://.</p>
+    </article>
+  </div>
+</body>
+</html>

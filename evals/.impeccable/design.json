@@ -1,0 +1,545 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-02T13:35:01+00:00",
+  "title": "Design System: Mastering AI Evals",
+  "extensions": {
+    "colorMeta": {
+      "sienna": {
+        "role": "primary",
+        "displayName": "Contents Sienna",
+        "canonical": "#8a3b1e",
+        "tonalRamp": [
+          "oklch(15% 0.116 39.8)",
+          "oklch(26% 0.116 39.8)",
+          "oklch(38% 0.116 39.8)",
+          "oklch(50% 0.116 39.8)",
+          "oklch(62% 0.116 39.8)",
+          "oklch(73% 0.116 39.8)",
+          "oklch(84% 0.116 39.8)",
+          "oklch(95% 0.116 39.8)"
+        ],
+        "cssVar": "--hue-contents",
+        "board": "contents"
+      },
+      "oxide-orange": {
+        "role": "primary",
+        "displayName": "Oxide Orange",
+        "canonical": "#e0661f",
+        "tonalRamp": [
+          "oklch(15% 0.171 45.7)",
+          "oklch(26% 0.171 45.7)",
+          "oklch(38% 0.171 45.7)",
+          "oklch(50% 0.171 45.7)",
+          "oklch(62% 0.171 45.7)",
+          "oklch(73% 0.171 45.7)",
+          "oklch(84% 0.171 45.7)",
+          "oklch(95% 0.171 45.7)"
+        ],
+        "cssVar": "--hue-part1",
+        "board": "1"
+      },
+      "chrome-yellow": {
+        "role": "primary",
+        "displayName": "Chrome Yellow",
+        "canonical": "#e8b50c",
+        "tonalRamp": [
+          "oklch(15% 0.161 87.9)",
+          "oklch(26% 0.161 87.9)",
+          "oklch(38% 0.161 87.9)",
+          "oklch(50% 0.161 87.9)",
+          "oklch(62% 0.161 87.9)",
+          "oklch(73% 0.161 87.9)",
+          "oklch(84% 0.161 87.9)",
+          "oklch(95% 0.161 87.9)"
+        ],
+        "cssVar": "--hue-part2",
+        "board": "2"
+      },
+      "grass": {
+        "role": "primary",
+        "displayName": "Grass",
+        "canonical": "#1a7f45",
+        "tonalRamp": [
+          "oklch(15% 0.134 152.5)",
+          "oklch(26% 0.134 152.5)",
+          "oklch(38% 0.134 152.5)",
+          "oklch(50% 0.134 152.5)",
+          "oklch(62% 0.134 152.5)",
+          "oklch(73% 0.134 152.5)",
+          "oklch(84% 0.134 152.5)",
+          "oklch(95% 0.134 152.5)"
+        ],
+        "cssVar": "--hue-part3",
+        "board": "3",
+        "note": "on-grass ink measures 4.82:1 after darkening grass to #1a7f45."
+      },
+      "ultramarine": {
+        "role": "primary",
+        "displayName": "Ultramarine",
+        "canonical": "#1f3fbf",
+        "tonalRamp": [
+          "oklch(15% 0.202 266.3)",
+          "oklch(26% 0.202 266.3)",
+          "oklch(38% 0.202 266.3)",
+          "oklch(50% 0.202 266.3)",
+          "oklch(62% 0.202 266.3)",
+          "oklch(73% 0.202 266.3)",
+          "oklch(84% 0.202 266.3)",
+          "oklch(95% 0.202 266.3)"
+        ],
+        "cssVar": "--hue-part4",
+        "board": "4"
+      },
+      "vermilion": {
+        "role": "tertiary",
+        "displayName": "Errata Vermilion",
+        "canonical": "#c41d24",
+        "tonalRamp": [
+          "oklch(15% 0.199 26.0)",
+          "oklch(26% 0.199 26.0)",
+          "oklch(38% 0.199 26.0)",
+          "oklch(50% 0.199 26.0)",
+          "oklch(62% 0.199 26.0)",
+          "oklch(73% 0.199 26.0)",
+          "oklch(84% 0.199 26.0)",
+          "oklch(95% 0.199 26.0)"
+        ],
+        "cssVar": "--vermilion",
+        "note": "Errata slips only. White on vermilion measures 5.92:1."
+      },
+      "press-ink": {
+        "role": "neutral",
+        "displayName": "Press Ink",
+        "canonical": "#171615",
+        "tonalRamp": [
+          "oklch(15% 0.003 67.7)",
+          "oklch(26% 0.003 67.7)",
+          "oklch(38% 0.003 67.7)",
+          "oklch(50% 0.003 67.7)",
+          "oklch(62% 0.003 67.7)",
+          "oklch(73% 0.003 67.7)",
+          "oklch(84% 0.003 67.7)",
+          "oklch(95% 0.003 67.7)"
+        ],
+        "cssVar": "--ink"
+      },
+      "warm-graphite": {
+        "role": "neutral",
+        "displayName": "Warm Graphite",
+        "canonical": "#44403b",
+        "tonalRamp": [
+          "oklch(15% 0.01 73.6)",
+          "oklch(26% 0.01 73.6)",
+          "oklch(38% 0.01 73.6)",
+          "oklch(50% 0.01 73.6)",
+          "oklch(62% 0.01 73.6)",
+          "oklch(73% 0.01 73.6)",
+          "oklch(84% 0.01 73.6)",
+          "oklch(95% 0.01 73.6)"
+        ],
+        "cssVar": "--ink-2"
+      },
+      "acetate-milk": {
+        "role": "neutral",
+        "displayName": "Acetate Milk",
+        "canonical": "color-mix(in oklab, #f4f5f4 96.5%, var(--board))",
+        "tonalRamp": [
+          "oklch(15% 0.002 145.6)",
+          "oklch(26% 0.002 145.6)",
+          "oklch(38% 0.002 145.6)",
+          "oklch(50% 0.002 145.6)",
+          "oklch(62% 0.002 145.6)",
+          "oklch(73% 0.002 145.6)",
+          "oklch(84% 0.002 145.6)",
+          "oklch(95% 0.002 145.6)"
+        ],
+        "cssVar": "--leaf",
+        "resolvedPerBoard": {
+          "contents": "#f1eeec",
+          "1": "#f4f0ed",
+          "2": "#f4f3ee",
+          "3": "#edf1ee",
+          "4": "#eceff3"
+        }
+      },
+      "acetate-deep": {
+        "role": "neutral",
+        "displayName": "Acetate Deep",
+        "canonical": "color-mix(in oklab, #e9eae8 94%, var(--board))",
+        "tonalRamp": [
+          "oklch(15% 0.003 128.5)",
+          "oklch(26% 0.003 128.5)",
+          "oklch(38% 0.003 128.5)",
+          "oklch(50% 0.003 128.5)",
+          "oklch(62% 0.003 128.5)",
+          "oklch(73% 0.003 128.5)",
+          "oklch(84% 0.003 128.5)",
+          "oklch(95% 0.003 128.5)"
+        ],
+        "cssVar": "--leaf-deep",
+        "resolvedPerBoard": {
+          "contents": "#e4dfdb",
+          "1": "#eae3dd",
+          "2": "#e9e7de",
+          "3": "#dee4de",
+          "4": "#dce0e7"
+        }
+      },
+      "on-sienna": {
+        "role": "on-primary",
+        "displayName": "Ink on Sienna",
+        "canonical": "#fbf7f2",
+        "cssVar": "--on-contents"
+      },
+      "on-oxide-orange": {
+        "role": "on-primary",
+        "displayName": "Ink on Oxide Orange",
+        "canonical": "#160c05",
+        "cssVar": "--on-part1"
+      },
+      "on-chrome-yellow": {
+        "role": "on-primary",
+        "displayName": "Ink on Chrome Yellow",
+        "canonical": "#161204",
+        "cssVar": "--on-part2"
+      },
+      "on-grass": {
+        "role": "on-primary",
+        "displayName": "Ink on Grass",
+        "canonical": "#f6fbf7",
+        "cssVar": "--on-part3"
+      },
+      "on-ultramarine": {
+        "role": "on-primary",
+        "displayName": "Ink on Ultramarine",
+        "canonical": "#f4f6ff",
+        "cssVar": "--on-part4"
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#1716152e",
+        "cssVar": "--rule"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page title h1, one per page; condensed caps, width 68%."
+      },
+      "part-mark": {
+        "displayName": "Part Mark",
+        "purpose": "Numeral or § in the board-colored square beside the title."
+      },
+      "headline-division": {
+        "displayName": "Division Headline",
+        "purpose": "Part names on the contents page."
+      },
+      "headline": {
+        "displayName": "Section Head",
+        "purpose": "Section heads hanging in the margin column, under a mono section number."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Sub-heads in a section body, procedure step titles, errata band, table terms, caption lead words."
+      },
+      "dek": {
+        "displayName": "Dek",
+        "purpose": "Standfirst under the page title."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running prose at 62ch with oldstyle proportional figures."
+      },
+      "body-reference": {
+        "displayName": "Reference Body",
+        "purpose": "Ruled tables and the reference list."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Table and figure captions in warm graphite."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Running head and table column heads."
+      },
+      "label-tab": {
+        "displayName": "Tab Label",
+        "purpose": "Rail tabs and row tabs."
+      },
+      "mono-number": {
+        "displayName": "Section Number",
+        "purpose": "1.1.x cross-reference numbers above section heads."
+      },
+      "mono-label": {
+        "displayName": "Mono Label",
+        "purpose": "Where markers, listing heads, folios, page numbers, counters."
+      },
+      "mono-listing": {
+        "displayName": "Listing Code",
+        "purpose": "Code inside listings."
+      }
+    },
+    "shadows": [
+      {
+        "name": "leaf-on-board",
+        "value": "inset 1px 1px 0 #ffffffb3, inset -1px -1px 0 #00000014, 3px 4px 6px #0000002e",
+        "purpose": "The acetate leaf over the Part board: a cut edge (light top-left, dark bottom-right) plus a short hard shadow."
+      },
+      {
+        "name": "slip-on-leaf",
+        "value": "2px 4px 6px #00000033",
+        "purpose": "The errata slip tipped into the leaf."
+      },
+      {
+        "name": "mark-on-leaf",
+        "value": "2px 3px 4px #00000033",
+        "purpose": "Part-mark square (division tabs use #00000030)."
+      },
+      {
+        "name": "tab-under-leaf",
+        "value": "-2px 2px 4px #00000038",
+        "purpose": "Rail tabs on the fore edge."
+      },
+      {
+        "name": "tab-mobile",
+        "value": "0 2px 3px #00000038",
+        "purpose": "Horizontal rail tabs at 820px and below."
+      },
+      {
+        "name": "rail-strip-mobile",
+        "value": "0 2px 4px #00000026",
+        "purpose": "Sticky horizontal rail strip at 820px and below."
+      }
+    ],
+    "motion": [
+      {
+        "name": "hinge",
+        "value": "90ms steps(2, jump-end)",
+        "purpose": "The only motion, and only for a state change on an interactive element: rail tabs slide on transform; an opening fold drops 0.5rem on transform; the fold triangle rotates; page-turn and citation hovers snap their inversion; link underlines thicken; a ruled-table row tints under the pointer (desktop pointer devices). Nothing fades, eases, or moves on scroll or load. prefers-reduced-motion removes every transition and animation."
+      }
+    ],
+    "focus": [
+      {
+        "name": "focus-ring",
+        "value": "outline: 3px solid var(--ink); outline-offset: 3px",
+        "purpose": "Global :focus-visible ring in press ink."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "narrow-margin",
+        "value": "1100px",
+        "purpose": "Margin column 9.5rem; leaf padding tightens."
+      },
+      {
+        "name": "single-column",
+        "value": "820px",
+        "purpose": "Grids collapse; tab rail becomes a sticky top strip; spine label hides."
+      },
+      {
+        "name": "print",
+        "value": "print",
+        "purpose": "White ground; rail, punches, spine label, and skip link removed."
+      }
+    ],
+    "conventions": {
+      "boardAttribute": "data-part on <body>: contents | 1 | 2 | 3 | 4",
+      "tabHueAttribute": "data-tab on .tab, .row-tab, .division",
+      "pageFiles": "Flat HTML at the project root referencing assets/ relatively (Firefox file:// same-directory font rule); no CDNs.",
+      "sectionNumbering": "P.p.n in .sec-num with anchor ids s-P-p-n; folio p. P.p in the running head.",
+      "unwritten": "aria-disabled=\"true\", no href, title=\"Part N is not written yet\"",
+      "unusedTokens": "--hue-refs (#0e7c7b) and data-part=\"refs\" are defined in course.css but no page uses them.",
+      "planned": [
+        "Mock terminal (static display of a terminal run) - not built."
+      ],
+      "ligatures": "Ligatures and contextual alternates are off in code, kbd, samp, pre, .where, and .folio so operators read as typed.",
+      "folds": "details.fold holds secondary material only (deeper dives, troubleshooting, references). References fold is open by default so citation anchors resolve.",
+      "equations": "MathML only; div.equation + .eq-num, numbered per Part; OS math font (STIX Two Math); aria-label on every block math."
+    }
+  },
+  "components": [
+    {
+      "name": "Rail Tab",
+      "kind": "nav",
+      "refersTo": "rail-tab",
+      "description": "Fore-edge division tabs: hover slides out on the hinge; current is extended and punched; unwritten is face-down.",
+      "html": "<nav class=\"ds-rail\" aria-label=\"Divisions\"><a class=\"ds-tab\" style=\"--tab-hue:#8a3b1e;--tab-ink:#fbf7f2\" href=\"#\"><span class=\"ds-tab-num\">§</span>Contents</a><a class=\"ds-tab\" style=\"--tab-hue:#e0661f;--tab-ink:#160c05\" href=\"#\" aria-current=\"page\"><span class=\"ds-tab-num\">1</span>Foundations</a><a class=\"ds-tab\" style=\"--tab-hue:#e8b50c;--tab-ink:#161204\" aria-disabled=\"true\" title=\"Part 2 is not written yet\"><span class=\"ds-tab-num\">2</span>Heuristic metrics</a></nav>",
+      "css": ".ds-rail { display: flex; flex-direction: column; gap: 3px; width: 3.25rem; padding: 1rem 0; } .ds-tab { position: relative; display: flex; align-items: center; justify-content: center; min-height: 9rem; margin-left: 0.625rem; padding: 0.75rem 0.375rem 0.75rem 0; background: var(--tab-hue); color: var(--tab-ink); border-radius: 0.5rem 0 0 0.5rem; box-shadow: -2px 2px 4px #00000038; writing-mode: vertical-rl; font-family: var(--font-head, Archivo, 'Helvetica Neue', Arial, sans-serif); font-stretch: 75%; font-weight: 650; font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; white-space: nowrap; transition: transform 90ms steps(2, jump-end); } .ds-tab:hover { transform: translateX(-0.375rem); } .ds-tab:focus-visible { outline: 3px solid #171615; outline-offset: 3px; } .ds-tab-num { font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-weight: 600; margin-bottom: 0.5rem; } .ds-tab[aria-current] { transform: translateX(-1rem); outline: 2px solid #171615; outline-offset: -2px; font-weight: 800; } .ds-tab[aria-current]::after { content: ''; position: absolute; top: 0.625rem; left: 50%; width: 0.625rem; height: 0.625rem; margin-left: -0.3125rem; border-radius: 50%; background: #171615; } .ds-tab[aria-current]:hover { transform: translateX(-1rem); } .ds-tab[aria-disabled='true'] { background: repeating-linear-gradient(135deg, transparent 0 6px, #00000024 6px 7px), var(--tab-hue); cursor: not-allowed; } .ds-tab[aria-disabled='true']:hover { transform: none; }"
+    },
+    {
+      "name": "Running Head",
+      "kind": "nav",
+      "refersTo": "running-head",
+      "description": "Course, Part, and folio on a 2px press-ink rule at the top of every leaf.",
+      "html": "<header class=\"ds-running-head\"><span><a href=\"#\">Mastering AI Evals</a> · Part 1 · Foundations &amp; Error Analysis</span><span class=\"ds-folio\">p. 1.1</span></header>",
+      "css": ".ds-running-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid #171615; color: #171615; font-family: var(--font-head, Archivo, 'Helvetica Neue', Arial, sans-serif); font-stretch: 75%; font-size: 0.875rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; } .ds-running-head a { color: inherit; text-decoration: none; } .ds-running-head a:hover { text-decoration: underline; text-underline-offset: 3px; } .ds-running-head a:focus-visible { outline: 3px solid #171615; outline-offset: 3px; } .ds-folio { font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-weight: 500; letter-spacing: 0.04em; }"
+    },
+    {
+      "name": "Section with Hanging Head",
+      "kind": "custom",
+      "refersTo": "leaf",
+      "description": "Mono section number and condensed-caps head in the margin column; serif body at 62ch.",
+      "html": "<div class=\"ds-leaf\"><section class=\"ds-section\"><h2 class=\"ds-section-head\"><span class=\"ds-sec-num\">1.1.3</span>The pyramid still applies</h2><div class=\"ds-section-body\"><p>Run heuristic checks on every output. Spend judge calls only on qualities heuristics cannot assess.<a class=\"ds-cite\" href=\"#\">[5]</a></p></div></section></div>",
+      "css": ".ds-leaf { background: color-mix(in oklab, #f4f5f4 96.5%, #e0661f); color: #171615; padding: 2rem 2rem 2rem 3rem; box-shadow: 3px 4px 6px #0000002e; } .ds-section { display: grid; grid-template-columns: 12.5rem minmax(0, 1fr); column-gap: 2rem; } .ds-section-head { margin: 0; padding-top: 0.3rem; font-family: var(--font-head, Archivo, 'Helvetica Neue', Arial, sans-serif); font-stretch: 72%; font-weight: 700; font-size: 1.375rem; line-height: 1.1; letter-spacing: 0.01em; text-transform: uppercase; } .ds-sec-num { display: block; margin-bottom: 0.25rem; font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-weight: 600; font-size: 0.9375rem; letter-spacing: 0.02em; } .ds-section-body p { max-width: 62ch; margin: 0; font-family: var(--font-body, 'EB Garamond', Georgia, serif); font-size: 1.25rem; line-height: 1.55; font-variant-numeric: oldstyle-nums proportional-nums; } .ds-cite { font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-size: 0.7em; font-weight: 600; vertical-align: 0.35em; line-height: 0; color: inherit; text-decoration: none; padding: 0 0.1em; } .ds-cite:hover { text-decoration: underline; } .ds-cite:focus-visible { outline: 3px solid #171615; outline-offset: 3px; }"
+    },
+    {
+      "name": "Row Tab",
+      "kind": "chip",
+      "refersTo": "row-tab",
+      "description": "Inline Part-colored tab tying a table row to the Part that teaches it.",
+      "html": "<span class=\"ds-row-tab\" style=\"--tab-hue:#e0661f;--tab-ink:#160c05\">Part 1</span> <span class=\"ds-row-tab\" style=\"--tab-hue:#1f3fbf;--tab-ink:#f4f6ff\">Part 4</span>",
+      "css": ".ds-row-tab { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.625rem 0.25rem 0.5rem; background: var(--tab-hue); color: var(--tab-ink); border-radius: 0 0.375rem 0.375rem 0; font-family: var(--font-head, Archivo, 'Helvetica Neue', Arial, sans-serif); font-stretch: 75%; font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }"
+    },
+    {
+      "name": "Errata Slip",
+      "kind": "card",
+      "refersTo": "errata-slip",
+      "description": "A white slip tipped into the leaf (rotated -0.4deg, perforated top edge) with a vermilion head band; used only to correct a stated analogy or simplification.",
+      "html": "<aside class=\"ds-errata\"><h3 class=\"ds-errata-head\">Errata to the analogy</h3><ol><li><strong>There is no single expected value.</strong> Expected becomes a reference output, a rubric, or a human label.</li><li><strong>Green once is not green.</strong> Run each case several times and report rates.</li></ol></aside>",
+      "css": ".ds-errata { position: relative; max-width: 48rem; padding-top: 0.5rem; background: #ffffff; color: #171615; transform: rotate(-0.4deg); transform-origin: 0 0; box-shadow: 2px 4px 6px #00000033; font-family: var(--font-body, 'EB Garamond', Georgia, serif); font-size: 1.125rem; line-height: 1.5; } .ds-errata::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 0.5rem; background: radial-gradient(circle at 50% 0, #f4f5f4 0.22rem, transparent 0.25rem) 0 0 / 0.75rem 0.5rem repeat-x; } .ds-errata-head { margin: 0; padding: 0.75rem 1.5rem; background: #c41d24; color: #fff; font-family: var(--font-head, Archivo, 'Helvetica Neue', Arial, sans-serif); font-stretch: 75%; font-weight: 750; font-size: 1.125rem; letter-spacing: 0.05em; text-transform: uppercase; } .ds-errata ol { margin: 0; padding: 1rem 1.5rem 1.5rem 3rem; counter-reset: erratum; list-style: none; } .ds-errata li { position: relative; counter-increment: erratum; padding: 0.75rem 0; border-bottom: 1px solid #c41d2433; } .ds-errata li:last-child { border-bottom: 0; } .ds-errata li::before { content: 'E' counter(erratum); position: absolute; left: -2rem; top: 0.95rem; font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-size: 0.8125rem; font-weight: 700; color: #c41d24; } .ds-errata strong { font-family: var(--font-head, Archivo, 'Helvetica Neue', Arial, sans-serif); font-stretch: 80%; font-weight: 700; font-size: 1.0625rem; letter-spacing: 0.02em; }"
+    },
+    {
+      "name": "Procedure Step with Where Marker",
+      "kind": "custom",
+      "refersTo": "procedure-step-number",
+      "description": "Lab steps done in VS Code: press-ink numbered squares, condensed step titles, and a boxed mono marker naming the tool.",
+      "html": "<ol class=\"ds-procedure\"><li><span class=\"ds-step-title\">Open a terminal</span><p class=\"ds-where\">VS Code · View → Terminal · <kbd class=\"ds-kbd\">⌃</kbd> <kbd class=\"ds-kbd\">`</kbd></p><p>Use the integrated terminal from your projects folder.</p></li></ol>",
+      "css": ".ds-procedure { list-style: none; margin: 0; padding: 0; counter-reset: step; color: #171615; font-family: var(--font-body, 'EB Garamond', Georgia, serif); font-size: 1.25rem; line-height: 1.55; } .ds-procedure > li { position: relative; counter-increment: step; padding: 0 0 2rem 3.5rem; } .ds-procedure > li::before { content: counter(step); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; background: #171615; color: #f4f5f4; font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-weight: 700; font-size: 1rem; } .ds-procedure p { margin: 0; } .ds-step-title { display: block; margin: 0.15rem 0 0.5rem; font-family: var(--font-head, Archivo, 'Helvetica Neue', Arial, sans-serif); font-stretch: 80%; font-weight: 700; font-size: 1.125rem; letter-spacing: 0.02em; text-transform: uppercase; } .ds-where { display: inline-flex; align-items: center; gap: 0.5rem; margin: 0 0 0.75rem !important; padding: 0.2rem 0.6rem; border: 1.5px solid #171615; font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-size: 0.8125rem; font-weight: 600; } .ds-kbd { padding: 0.05em 0.4em; border: 1px solid #171615; border-bottom-width: 2px; border-radius: 3px; background: #fff; font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-size: 0.8em; font-weight: 600; }"
+    },
+    {
+      "name": "Listing",
+      "kind": "custom",
+      "refersTo": "listing",
+      "description": "Code printed in the manual: ink on near-white inside a 1.5px ink frame, headed by the file path or 'Terminal'. For copying into VS Code; nothing runs.",
+      "html": "<div class=\"ds-listing\"><div class=\"ds-listing-head\"><span class=\"ds-path\">Terminal</span><span>zsh / bash</span></div><pre><code><span class=\"ds-prompt\">$ </span>mkdir -p evals-lab/notes\n<span class=\"ds-prompt\">$ </span>cd evals-lab\n<span class=\"ds-prompt\">$ </span>code .</code></pre></div>",
+      "css": ".ds-listing { max-width: 56rem; background: #fbfbf9; color: #171615; border: 1.5px solid #171615; } .ds-listing-head { display: flex; justify-content: space-between; gap: 1rem; padding: 0.5rem 1rem; border-bottom: 1px solid #171615; background: #e9eae8; font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-size: 0.8125rem; color: #44403b; } .ds-listing-path { color: #171615; font-weight: 700; } .ds-listing pre { margin: 0; padding: 1rem; overflow-x: auto; font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-size: 0.875rem; line-height: 1.6; font-variant-ligatures: none; font-feature-settings: 'calt' 0, 'liga' 0; } .ds-prompt { color: #44403b; user-select: none; }"
+    },
+    {
+      "name": "Page Turn",
+      "kind": "button",
+      "refersTo": "page-turn",
+      "description": "Previous/next boxes; hover inverts on the hinge; an unwritten target is dashed and aria-disabled.",
+      "html": "<nav class=\"ds-page-turn\" aria-label=\"Page turn\"><a class=\"ds-turn\" href=\"#\"><span class=\"ds-turn-dir\">← Previous</span>Contents</a><span class=\"ds-turn\" aria-disabled=\"true\"><span class=\"ds-turn-dir\">Next → not yet written</span>1.2 Why LLM outputs break assertions</span></nav>",
+      "css": ".ds-page-turn { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; padding-top: 1rem; border-top: 2px solid #171615; } .ds-turn { display: flex; flex-direction: column; gap: 0.25rem; min-width: 14rem; padding: 0.75rem 1rem; border: 1.5px solid #171615; color: #171615; text-decoration: none; font-family: var(--font-head, Archivo, 'Helvetica Neue', Arial, sans-serif); font-stretch: 80%; font-weight: 700; font-size: 1.0625rem; letter-spacing: 0.03em; text-transform: uppercase; transition: background-color 90ms steps(2, jump-end), color 90ms steps(2, jump-end); } .ds-turn-dir { font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-weight: 500; font-size: 0.8125rem; text-transform: none; letter-spacing: 0; } a.ds-turn:hover { background: #171615; color: #f4f5f4; } a.ds-turn:focus-visible { outline: 3px solid #171615; outline-offset: 3px; } .ds-turn[aria-disabled='true'] { border-style: dashed; color: #44403b; cursor: not-allowed; }"
+    },
+    {
+      "name": "Fold",
+      "kind": "custom",
+      "refersTo": "fold",
+      "description": "A native <details> flap for secondary material (deeper dives, troubleshooting, references); opens with the two-step hinge on transform.",
+      "html": "<details class=\"ds-fold\"><summary>Troubleshooting: <code>code: command not found</code> <span class=\"ds-fold-meta\"></span></summary><div class=\"ds-fold-body\"><p>Run “Shell Command: Install 'code' command in PATH” from the Command Palette, then open a new terminal.</p></div></details>",
+      "css": ".ds-fold { max-width: 46rem; border-top: 1.5px solid #171615; border-bottom: 1px solid #1716152e; color: #171615; font-family: var(--font-body, 'EB Garamond', Georgia, serif); font-size: 1.125rem; } .ds-fold > summary { display: flex; align-items: baseline; gap: 0.75rem; padding: 0.75rem 0; cursor: pointer; list-style: none; font-family: var(--font-head, Archivo, 'Helvetica Neue', Arial, sans-serif); font-stretch: 80%; font-weight: 700; font-size: 1rem; letter-spacing: 0.04em; text-transform: uppercase; } .ds-fold > summary::-webkit-details-marker { display: none; } .ds-fold > summary::before { content: ''; flex: none; border-style: solid; border-width: 0.4rem 0 0.4rem 0.6rem; border-color: transparent transparent transparent currentColor; transition: transform 90ms steps(2, jump-end); } .ds-fold[open] > summary::before { transform: rotate(90deg); } .ds-fold > summary code { text-transform: none; letter-spacing: 0; font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-size: 0.8em; font-weight: 500; background: #e9eae8; padding: 0.05em 0.3em; border-radius: 3px; } .ds-fold-meta { margin-left: auto; font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-size: 0.75rem; font-weight: 500; letter-spacing: 0; text-transform: none; color: #44403b; } .ds-fold-meta::after { content: 'open'; } .ds-fold[open] .ds-fold-meta::after { content: 'close'; } .ds-fold > summary:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; } .ds-fold > summary:focus-visible { outline: 3px solid #171615; outline-offset: 2px; } .ds-fold-body { padding: 0 0 1rem 1.35rem; } .ds-fold[open] > .ds-fold-body { animation: ds-fold-hinge 90ms steps(2, jump-end); } @keyframes ds-fold-hinge { from { transform: translateY(-0.5rem); } to { transform: none; } }"
+    },
+    {
+      "name": "Equation",
+      "kind": "custom",
+      "refersTo": "equation",
+      "description": "A numbered MathML display line between hairlines; no script, OS math font.",
+      "html": "<div class=\"ds-eq\"><math display=\"block\" aria-label=\"p sub u equals 1 minus 0.05 to the power 1 over n, approximately 3 over n\"><msub><mi>p</mi><mi>u</mi></msub><mo>=</mo><mn>1</mn><mo>−</mo><msup><mn>0.05</mn><mrow><mn>1</mn><mo>/</mo><mi>n</mi></mrow></msup><mo>≈</mo><mfrac><mn>3</mn><mi>n</mi></mfrac></math><span class=\"ds-eq-num\">(4)</span></div>",
+      "css": ".ds-eq { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 1rem; max-width: 62ch; padding: 1rem 0; border-top: 1px solid #1716152e; border-bottom: 1px solid #1716152e; color: #171615; } .ds-eq math { margin: 0; font-family: 'STIX Two Math', 'Latin Modern Math', 'Cambria Math', math; font-size: 1.3rem; } .ds-eq-num { font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace); font-size: 0.875rem; font-weight: 600; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Tabbed Reference Manual",
+    "overview": "Every page is a boxed-software manual lying open at one of its divisions. The page ground is that division's divider board, printed in one full hue with a fine paper grain; the reading matter sits on a milk-acetate leaf hinged over it, punched along its bound edge; a stepped rail of colored tabs runs down the fore edge so the reader can see the whole volume and where they are in it. The system is physical and literal: if a device would not exist in a printed, ring-bound manual (a glowing card, a floating action button, a run button), it does not exist here.\n\nThe voice is an engineer's reference, not a product site. Density is generous but disciplined: one long measure of serif text per section, heads hanging in a margin column, tables and figures allowed to run wide. Color is structural, never decorative: a hue tells you which Part you are in, and one reserved red tells you that a stated analogy is being corrected. The course explicitly refuses two looks: the docs-site sidebar with a link tree, and the dark AI-console page.\n\nEverything ships as flat HTML files opened from disk. Fonts, the stylesheet, and figures are local; nothing on a page executes. Practice happens in VS Code and the terminal, and the components are built to send the reader there.",
+    "keyCharacteristics": [
+      "Full-hue Part board as the page ground, set once per page by `data-part` on `<body>`, with a fixed fractal-noise grain over it.",
+      "Milk-acetate leaf, faintly tinted toward the board, with a crisp cut edge and three binder punches that show depth.",
+      "Fore-edge tab rail: one tab per division, tab length proportional to the division's page count; the current tab extends and is punched.",
+      "Three voices: condensed Archivo caps for structure, EB Garamond for prose, JetBrains Mono for machine text and numbering.",
+      "Short, hard, down-right paper shadows; square sheets; rounded corners only on tabs and keycaps.",
+      "One motion token: a 90ms two-step hinge, used only for state changes on interactive elements.",
+      "Vermilion exists only on errata slips."
+    ],
+    "rules": [
+      {
+        "name": "The Board Owns the Hue Rule",
+        "body": "A page's ground hue is chosen by exactly one attribute, `data-part` on `<body>` (`contents`, `1`, `2`, `3`, `4`), which sets `--board` and `--on-board`. Components that must show another Part's hue (rail tabs, row tabs, division tabs) take it from `data-tab`, never from a hardcoded color.",
+        "section": "colors"
+      },
+      {
+        "name": "The Errata-Only Vermilion Rule",
+        "body": "Vermilion appears on `.errata` and nowhere else: not for links, warnings, emphasis, or errors in listings. Its rarity is what makes a correction read as a correction.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tinted Acetate Rule",
+        "body": "The leaf is never pure white and never a fixed gray; it always carries 3.5% of the board beneath it. Pure white is reserved for keycaps, the errata slip, and type on the vermilion band.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Voices Rule",
+        "body": "Archivo condensed caps is the manual's structure (heads, tabs, labels, captions' lead words). EB Garamond is the author speaking. JetBrains Mono is the machine and the numbering system: commands, paths, keys, folios, section and reference numbers. A string never borrows another voice.",
+        "section": "typography"
+      },
+      {
+        "name": "The Width Axis Rule",
+        "body": "Condense heads with `font-stretch`, never with a different family: 62–68% for display, 70–72% for headlines and division tabs, 75% for labels and tabs, 78–80% for titles. Heads are uppercase; body text is never condensed.",
+        "section": "typography"
+      },
+      {
+        "name": "The Numbers Are Addresses Rule",
+        "body": "The mono number above a section head (`1.1.1`, `1.1.2`…) and the `p. 1.1` folio are a cross-reference system matched by anchor ids (`s-1-1-1`). They are not decoration. There are no eyebrow or kicker labels: no small category line above a title or head; the running head already says where you are.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hanging Head Rule",
+        "body": "Heads live in the margin column and text lives in the body column. Do not center headings, do not put a head inside the text column at section level, and do not let prose exceed 62ch.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat Files Rule",
+        "body": "Every page is a flat HTML file at the project root (`index.html`, `part1-1-mental-model.html`, `part2-3-…html`) that references `assets/` relatively. Firefox's `file://` policy only lets a document load fonts from its own directory or below, so a page in a subfolder would lose its typefaces. No CDN, no build step, no network.",
+        "section": "layout"
+      },
+      {
+        "name": "The Paper Stack Rule",
+        "body": "Only physical sheets cast shadows, offsets stay at or under 4px with blur at or under 6px, and shadow never signals state. State is shown by position (a tab slides out), outline, or inversion.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Tab Corner Rule",
+        "body": "A corner is rounded only if it is the free edge of a tab, a key, or a small inline mark (inline code, an inverted citation marker). Everything that is a sheet stays square.",
+        "section": "shapes"
+      },
+      {
+        "name": "The No Run Button Rule",
+        "body": "Nothing on a page executes. There are no interactive widgets, run buttons, copy-to-run controls, calculators, or live consoles. Labs point to VS Code and the terminal through procedures, where markers, and listings.",
+        "section": "components"
+      },
+      {
+        "name": "The Face-Down Rule",
+        "body": "A page that is not written yet is shown, not hidden: a hatched, full-hue `aria-disabled` rail tab; a dashed `aria-disabled` page turn; a \"not yet written\" state on the contents page. Never give an unwritten page an `href`.",
+        "section": "components"
+      },
+      {
+        "name": "The Hinge Rule",
+        "body": "The system has one motion token: a 90ms `steps(2, jump-end)` hinge. It moves tabs on `transform`, drops an opening fold on `transform`, rotates the fold triangle, snaps the page-turn and citation inversions, thickens link underlines on hover, and tints a ruled-table row under the pointer (pointer devices, desktop width only). Nothing fades, eases, or animates layout, nothing moves on scroll or page load, and `prefers-reduced-motion` removes every transition and animation.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do set `data-part` on `<body>` for every page (`contents`, `1`–`4`) and let it choose the board; use `data-tab` on any component that shows another Part's hue.",
+      "Do put every page at the project root as a flat file and reference `assets/css/course.css` relatively; keep fonts in `assets/fonts/`.",
+      "Do number sections `P.p.n` (`1.1.1`) with a mono `.sec-num` and matching anchor ids, and match the folio in the running head to the page number.",
+      "Do keep the hanging-head grid: a 12.5rem margin column for heads, body text at 62ch, `.wide` only for tables and figures.",
+      "Do list every unwritten page as a face-down `aria-disabled` tab or turn without an `href`.",
+      "Do send labs to VS Code and the terminal with `.procedure`, `.where`, and `.listing`, and label each listing with its file path or \"Terminal\".",
+      "Do caption tables and figures as \"Table N.\" / \"Figure N.\" in condensed bold caps, and give every SVG figure a `<title>` and full `<desc>`.",
+      "Do use only the 90ms two-step hinge for motion, and only to show a state change on an interactive element.",
+      "Do put deeper dives, troubleshooting, and references in a `details.fold`; keep core theory unfolded."
+    ],
+    "donts": [
+      "Don't use vermilion outside `.errata`.",
+      "Don't make the page, the leaf, or a listing dark; the dark AI-console look is rejected.",
+      "Don't add a docs-site sidebar or link tree; navigation is the tab rail, the running head, the contents page, and the page turn.",
+      "Don't add eyebrow or kicker labels above titles or heads; section numbers and the running head already locate the reader.",
+      "Don't add run buttons, interactive widgets, code runners, or in-browser evaluation.",
+      "Don't load fonts, scripts, or styles from a CDN, or put pages in subfolders.",
+      "Don't round sheets, cards, or panels; only tabs, keycaps, and inline code are rounded.",
+      "Don't use shadows for hover or state, or any shadow larger than the paper-stack offsets.",
+      "Don't use fades, easing curves, or layout animation."
+    ]
+  }
+}

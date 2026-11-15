@@ -1,0 +1,269 @@
+<!doctype html>
+<!--
+THESIS: The course is a reference manual opened at a tabbed division; it refuses the docs-site sidebar and the dark AI-console look.
+OWN-WORLD: Each Part owns a full-hue divider board (oxide orange, chrome yellow, grass, ultramarine; sienna for contents). Reading matter sits on a milk-acetate leaf with binder punches; a stepped tab rail runs down the fore edge; vermilion appears only on errata slips. Archivo condensed caps for heads, EB Garamond for text, JetBrains Mono for machine voice.
+STORY: An engineer learns that the four eval practices map onto four testing habits they already own, sees exactly where each mapping fails, and leaves for VS Code to write their own map.
+FIRST VIEWPORT: Orange board; leaf with running head, a large "1" part mark beside the condensed-caps title and dek; the tab rail at the right edge with Part 1 extended and punched.
+FORM: Boxed-software manual, acetate leaf over tab board (alternate chosen by user; seed c0773c82); staging: hanging margin heads, Table 1 as the course map.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1.1 Mental Model Foundations · Mastering AI Evals</title>
+  <meta name="description" content="Part 1, page 1.1: how vibe checks, heuristic evals, LLM-as-a-Judge, and golden datasets map onto ad-hoc logging, unit tests, end-to-end tests, and CI regression suites, and where each mapping breaks.">
+  <link rel="stylesheet" href="assets/css/course.css">
+</head>
+<body data-part="1">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <nav class="tab-rail" aria-label="Divisions of the manual">
+    <ol>
+      <li style="--extent: 3"><a class="tab" data-tab="contents" href="index.html"><span class="tab-num">§</span><span class="tab-word">Contents</span></a></li>
+      <li style="--extent: 6"><a class="tab" data-tab="1" href="part1-1-mental-model.html" aria-current="page"><span class="tab-num">1</span><span class="tab-word">Foundations</span></a></li>
+      <li style="--extent: 7"><a class="tab" data-tab="2" aria-disabled="true" title="Part 2 is not written yet"><span class="tab-num">2</span><span class="tab-word">Heuristic metrics</span></a></li>
+      <li style="--extent: 8"><a class="tab" data-tab="3" aria-disabled="true" title="Part 3 is not written yet"><span class="tab-num">3</span><span class="tab-word">LLM-as-a-Judge</span></a></li>
+      <li style="--extent: 8"><a class="tab" data-tab="4" aria-disabled="true" title="Part 4 is not written yet"><span class="tab-num">4</span><span class="tab-word">Golden sets &amp; CI</span></a></li>
+    </ol>
+  </nav>
+
+  <div class="volume">
+    <p class="spine-label" aria-hidden="true">Mastering AI Evals · Reference Manual · Rev. 2026.11</p>
+
+    <article class="leaf" id="main">
+      <header class="running-head">
+        <span><a href="index.html">Mastering AI Evals</a> · Part 1<span class="rh-desc"> · Foundations &amp; Error Analysis</span></span>
+        <span class="folio">p. 1.1</span>
+      </header>
+
+      <div class="title-block">
+        <div class="part-mark" aria-hidden="true">1</div>
+        <div>
+          <h1>Mental Model Foundations</h1>
+          <p class="dek">You already run an evaluation practice; you call it testing. This page maps the four tools of AI evaluation onto four tools you use every week, then marks exactly where each mapping stops being true. Read it before you write any eval code: the analogy tells you what each technique is for, and the breaks tell you what it cannot do.</p>
+        </div>
+      </div>
+
+      <section class="section" aria-labelledby="s-1-1-1">
+        <h2 class="section-head" id="s-1-1-1"><span class="sec-num">1.1.1</span>What changes when the output is language</h2>
+        <div class="section-body">
+          <p>A unit test works because the code under test has an <em>oracle</em>: for an input <code>x</code> you know the expected output <code>y</code>, so <code>assert f(x) == y</code> is decidable. Barr et&nbsp;al. call the absence of such a mechanism the <em>test oracle problem</em>, and survey how testing proceeds without one.&#8288;<a class="cite" href="#ref-2" aria-label="Reference 2">[2]</a></p>
+          <p>LLM features sit inside that problem. A summary, an answer, or an agent's plan can be correct in many surface forms and wrong in subtle ones. An equality assertion rejects a good paraphrase and accepts nothing else, so it tells you almost nothing.</p>
+          <p>Two more properties change. First, outputs are <em>sampled</em>: at a temperature above zero the same prompt is meant to produce different completions. Second, even greedy decoding at temperature&nbsp;0 is not reliably reproducible on production inference servers. He and Thinking Machines Lab trace much of this to kernels that lack <em>batch invariance</em>: a request's numerics depend on how many other requests share its forward pass.&#8288;<a class="cite" href="#ref-3" aria-label="Reference 3">[3]</a> The practical consequence for this course: an eval result is a measurement over a sample, not a single boolean.</p>
+
+          <details class="fold">
+            <summary>Deeper: why temperature&nbsp;0 still varies <span class="fold-meta" aria-hidden="true"></span></summary>
+            <div class="fold-body">
+              <p>Floating-point addition is not associative: <code>(a + b) + c</code> can differ from <code>a + (b + c)</code> in the last bits. He shows that this alone does not make a kernel nondeterministic; the same matrix multiplication on the same data repeatedly returns bitwise-equal results.&#8288;<a class="cite" href="#ref-3" aria-label="Reference 3">[3]</a></p>
+              <p>The missing piece is <em>batch invariance</em>. Common kernels change their reduction strategy with batch size, so one request's numerics depend on how many requests share its forward pass. In He's words, <q>the primary reason nearly all LLM inference endpoints are nondeterministic is that the load (and thus batch-size) nondeterministically varies.</q>&#8288;<a class="cite" href="#ref-3" aria-label="Reference 3">[3]</a> A tiny numeric difference can flip one greedy token choice, and every later token follows from it.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="s-1-1-2">
+        <h2 class="section-head" id="s-1-1-2"><span class="sec-num">1.1.2</span>The bridge</h2>
+        <div class="section-body">
+          <p>Each eval practice below inherits the job of a testing habit you already have. The right-hand column is the part people skip, and it is where most bad eval suites come from. Every row carries the tab color of the Part that teaches it in depth.</p>
+
+          <div class="table-wrap wide" role="region" aria-labelledby="table-1-caption" tabindex="0">
+            <table class="ruled">
+              <caption id="table-1-caption"><b>Table 1.</b> Four evaluation practices and their software-engineering counterparts. Bias findings are from Zheng et&nbsp;al.&#8288;<a class="cite" href="#ref-1" aria-label="Reference 1">[1]</a>; judge validation from Shankar et&nbsp;al.&#8288;<a class="cite" href="#ref-4" aria-label="Reference 4">[4]</a></caption>
+              <thead>
+                <tr>
+                  <th scope="col" style="width: 17%">Eval practice</th>
+                  <th scope="col" style="width: 17%">SWE counterpart</th>
+                  <th scope="col" style="width: 27%">What carries over</th>
+                  <th scope="col" style="width: 29%">Where it stops holding</th>
+                  <th scope="col" style="width: 10%">Taught in</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row"><span class="term">Vibe checking</span><span class="gloss">Reading a handful of outputs by eye after a prompt change.</span></th>
+                  <td data-label="SWE counterpart"><span class="term">Ad-hoc logging</span><span class="gloss"><code>print()</code> and <code>console.log</code> while debugging.</span></td>
+                  <td data-label="What carries over">Instant, no setup, and the best way to <em>discover</em> what can go wrong. Error analysis (page&nbsp;1.4) turns these observations into named failure categories.</td>
+                  <td data-label="Where it stops holding">Nothing is recorded, nothing is repeatable, and there is no pass or fail. Ten outputs you liked say little about the distribution your users will see.</td>
+                  <td data-label="Taught in"><span class="row-tab" data-tab="1">Part 1</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><span class="term">Heuristic evals</span><span class="gloss">Exact match, regex, JSON Schema, BLEU, ROUGE, tool-argument checks.</span></th>
+                  <td data-label="SWE counterpart"><span class="term">Unit tests</span><span class="gloss">Deterministic assertions on a small unit.</span></td>
+                  <td data-label="What carries over">Deterministic, cheap, and fast enough to run on every output and every commit. Same input, same score.</td>
+                  <td data-label="Where it stops holding">They score surface form, not meaning. <q>The capital is Paris</q> and <q>The capital is not Paris</q> share most of their n-grams; a correct paraphrase may share almost none.</td>
+                  <td data-label="Taught in"><span class="row-tab" data-tab="2">Part 2</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><span class="term">LLM-as-a-Judge</span><span class="gloss">A model grades outputs against a rubric, singly or pairwise.</span></th>
+                  <td data-label="SWE counterpart"><span class="term">E2E integration tests</span><span class="gloss">Exercise whole behavior through the real stack.</span></td>
+                  <td data-label="What carries over">Assesses what heuristics cannot see: helpfulness, faithfulness to sources, whether an agent finished its task.</td>
+                  <td data-label="Where it stops holding">Slower, costs tokens, and the test is itself a model with documented position, verbosity, and self-enhancement biases.&#8288;<a class="cite" href="#ref-1" aria-label="Reference 1">[1]</a> Validate it against human labels before trusting it.&#8288;<a class="cite" href="#ref-4" aria-label="Reference 4">[4]</a></td>
+                  <td data-label="Taught in"><span class="row-tab" data-tab="3">Part 3</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><span class="term">Golden datasets</span><span class="gloss">A curated, versioned set of inputs with expected outputs or labels.</span></th>
+                  <td data-label="SWE counterpart"><span class="term">CI/CD regression suites</span><span class="gloss">Fixed fixtures that gate merges and releases.</span></td>
+                  <td data-label="What carries over">Version control, a baseline, thresholds, and blocking a release when quality regresses.</td>
+                  <td data-label="Where it stops holding">A pass rate on <var>N</var> examples is an estimate with sampling error, not a fact. The set drifts away from production traffic unless you keep refreshing it.</td>
+                  <td data-label="Taught in"><span class="row-tab" data-tab="4">Part 4</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="s-1-1-3">
+        <h2 class="section-head" id="s-1-1-3"><span class="sec-num">1.1.3</span>The pyramid still applies</h2>
+        <div class="section-body">
+          <p>Mike Cohn's <em>test automation pyramid</em> argues for many more low-level tests than broad-stack ones. As Fowler summarizes, the pyramid rests on the assumption that broad-stack tests are expensive, slow, and brittle compared with focused tests such as unit tests.&#8288;<a class="cite" href="#ref-5" aria-label="Reference 5">[5]</a> The same economics hold for evals. Run heuristic checks on every output. Spend judge calls only on qualities heuristics cannot assess. Reserve human review for the two jobs nothing else can do: labeling data and calibrating the judge.</p>
+          <p>Golden datasets are not a layer. They are the fixtures every layer runs against, just as one regression suite feeds the same fixtures to unit and integration tests. Vibe checks sit outside the pyramid entirely, like a debugger session: useful, never a gate.</p>
+
+          <figure class="plate wide">
+            <svg viewBox="0 0 700 340" role="img" aria-labelledby="fig1-title fig1-desc">
+              <title id="fig1-title">The test pyramid relabeled for evals</title>
+              <desc id="fig1-desc">A three-layer pyramid. Base: heuristic checks, run on every output and commit. Middle: LLM-as-a-Judge, for qualities heuristics cannot see. Top: human review, to label data and calibrate judges. Beneath the pyramid, a slab labeled golden dataset: fixtures every layer runs against. Off to the upper left, a dashed box: vibe checks, outside the suite. An axis on the right reads fewer and costlier toward the top, more and cheaper toward the bottom.</desc>
+              <g font-family="Archivo, Helvetica Neue, Arial, sans-serif" font-stretch="75%">
+                <rect x="18" y="26" width="178" height="58" fill="none" stroke="#171615" stroke-width="1.5" stroke-dasharray="6 5"/>
+                <text x="32" y="51" font-size="15" font-weight="700" fill="#171615" letter-spacing="1">VIBE CHECKS</text>
+                <text x="32" y="71" font-size="13" fill="#44403b" font-family="EB Garamond, Georgia, serif" font-stretch="100%" font-style="italic">outside the suite; never a gate</text>
+
+                <polygon points="350,20 443.3,100 256.7,100" fill="#f6f6f3" stroke="#171615" stroke-width="2"/>
+                <text x="350" y="88" text-anchor="middle" font-size="12.5" font-weight="700" fill="#171615" letter-spacing="0.8">HUMAN REVIEW</text>
+
+                <polygon points="256.7,100 443.3,100 536.7,180 163.3,180" fill="#1a7f45" stroke="#171615" stroke-width="2"/>
+                <text x="350" y="137" text-anchor="middle" font-size="16" font-weight="750" fill="#f6fbf7" letter-spacing="1">LLM-AS-A-JUDGE</text>
+                <text x="350" y="160" text-anchor="middle" font-size="14" fill="#f6fbf7" font-family="EB Garamond, Georgia, serif" font-stretch="100%">qualities heuristics cannot see</text>
+
+                <polygon points="163.3,180 536.7,180 630,260 70,260" fill="#e8b50c" stroke="#171615" stroke-width="2"/>
+                <text x="350" y="216" text-anchor="middle" font-size="17" font-weight="750" fill="#161204" letter-spacing="1">HEURISTIC CHECKS</text>
+                <text x="350" y="240" text-anchor="middle" font-size="14.5" fill="#161204" font-family="EB Garamond, Georgia, serif" font-stretch="100%">every output, every commit</text>
+
+                <rect x="70" y="272" width="560" height="46" fill="#1f3fbf" stroke="#171615" stroke-width="2"/>
+                <text x="350" y="301" text-anchor="middle" font-size="15.5" font-weight="750" fill="#f4f6ff" letter-spacing="1">GOLDEN DATASET · FIXTURES EVERY LAYER RUNS AGAINST</text>
+
+                <line x1="668" y1="34" x2="668" y2="254" stroke="#171615" stroke-width="1.5"/>
+                <polygon points="668,24 662,38 674,38" fill="#171615"/>
+                <polygon points="668,264 662,250 674,250" fill="#171615"/>
+                <text x="684" y="82" font-size="11.5" font-weight="650" fill="#171615" letter-spacing="0.8" transform="rotate(90 684 82)" text-anchor="middle">FEWER · COSTLIER</text>
+                <text x="684" y="206" font-size="11.5" font-weight="650" fill="#171615" letter-spacing="0.8" transform="rotate(90 684 206)" text-anchor="middle">MORE · CHEAPER</text>
+              </g>
+            </svg>
+            <figcaption><b>Figure 1.</b> Cohn's test automation pyramid&#8288;<a class="cite" href="#ref-5" aria-label="Reference 5">[5]</a> relabeled for evals. The relabeling is this course's adaptation, not part of Cohn's original.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="s-1-1-4">
+        <h2 class="section-head" id="s-1-1-4"><span class="sec-num">1.1.4</span>Where the bridge breaks</h2>
+        <div class="section-body">
+          <p>Analogies speed up learning and then mislead you at the edges. Keep these four corrections next to Table&nbsp;1; each one is the reason a later Part exists.</p>
+
+          <aside class="errata" aria-labelledby="errata-1">
+            <h3 id="errata-1">Errata to the analogy</h3>
+            <ol>
+              <li><strong>There is no single expected value.</strong> Without an oracle,&#8288;<a class="cite" href="#ref-2" aria-label="Reference 2">[2]</a> <code>expected</code> becomes a reference output, a rubric, or a human label. Every metric in Part&nbsp;2 is a different answer to <q>how close is close enough?</q></li>
+              <li><strong>Green once is not green.</strong> Because inference is not reliably deterministic,&#8288;<a class="cite" href="#ref-3" aria-label="Reference 3">[3]</a> one passing run proves little. Run each case several times and report rates with confidence intervals (Part&nbsp;4).</li>
+              <li><strong>The test can be wrong.</strong> An LLM judge carries measurable biases.&#8288;<a class="cite" href="#ref-1" aria-label="Reference 1">[1]</a> Shankar et&nbsp;al. also observe <em>criteria drift</em>: <q>users need criteria to grade outputs, but grading outputs helps users define criteria.</q>&#8288;<a class="cite" href="#ref-4" aria-label="Reference 4">[4]</a> So you read outputs <em>before</em> writing criteria; that is error analysis, later in Part&nbsp;1.</li>
+              <li><strong>A passing suite describes the sample, not production.</strong> Your golden set is evidence about the inputs you collected. Users send other inputs; online evals (Part&nbsp;4) close that gap.</li>
+            </ol>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="s-1-1-5">
+        <h2 class="section-head" id="s-1-1-5"><span class="sec-num">1.1.5</span>Take it to VS Code</h2>
+        <div class="section-body">
+          <p>This page has no exercise widget on purpose. You'll write your own version of Table&nbsp;1 for a real LLM feature, in a file you keep. Labs later in Part&nbsp;1 build on this folder.</p>
+
+          <ol class="procedure">
+            <li>
+              <span class="step-title">Open a terminal</span>
+              <p class="where">VS Code · View → Terminal · <kbd>Ctrl</kbd> + <kbd>`</kbd></p>
+              <p>Use the integrated terminal from whichever folder you normally keep projects in.</p>
+            </li>
+            <li>
+              <span class="step-title">Create the lab folder and open it</span>
+              <div class="listing">
+                <div class="listing-head"><span class="path">Terminal</span><span>zsh / bash</span></div>
+<pre><code><span class="prompt">$ </span>mkdir -p evals-lab/notes
+<span class="prompt">$ </span>cd evals-lab
+<span class="prompt">$ </span>code .</code></pre>
+              </div>
+              <details class="fold">
+                <summary>Troubleshooting: <code>code: command not found</code> <span class="fold-meta" aria-hidden="true"></span></summary>
+                <div class="fold-body">
+                  <p>The VS Code launcher is not on your <code>PATH</code> yet. In VS Code, open the Command Palette (<kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>P</kbd>), run <q>Shell Command: Install 'code' command in PATH</q>, then open a new terminal and repeat <code>code .</code></p>
+                </div>
+              </details>
+            </li>
+            <li>
+              <span class="step-title">Create the mental-model file</span>
+              <div class="listing">
+                <div class="listing-head"><span class="path">Terminal</span><span>zsh / bash</span></div>
+<pre><code><span class="prompt">$ </span>code notes/mental-model.md</code></pre>
+              </div>
+              <p>VS Code creates the file on first save. Copy this template into it:</p>
+              <div class="listing">
+                <div class="listing-head"><span class="path">evals-lab/notes/mental-model.md</span><span>Markdown</span></div>
+<pre><code># Mental model: &lt;feature name&gt;
+
+Feature: &lt;one sentence: what the LLM does, and for whom&gt;
+
+| Eval practice   | My SWE habit today                 | Eval I will build |
+|-----------------|------------------------------------|-------------------|
+| Vibe checking   | e.g. print outputs and eyeball     |                   |
+| Heuristic evals | e.g. unit tests on the parser      |                   |
+| LLM-as-a-Judge  | e.g. manual QA pass before release |                   |
+| Golden dataset  | e.g. regression suite in CI        |                   |
+
+## Where the analogy breaks for this feature
+
+- Oracle: is there one right answer, or many acceptable ones?
+- Determinism: have you seen one input produce two answers?
+- Judge risk: which quality would a model grade unreliably?
+- Coverage: which real user inputs are missing from your examples?</code></pre>
+              </div>
+            </li>
+            <li>
+              <span class="step-title">Fill it in and confirm it saved</span>
+              <p>Pick one LLM feature you build or use. Fill every cell, then check from the terminal that the file exists:</p>
+              <div class="listing">
+                <div class="listing-head"><span class="path">Terminal</span><span>zsh / bash</span></div>
+<pre><code><span class="prompt">$ </span>ls notes
+mental-model.md</code></pre>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="s-refs">
+        <h2 class="section-head" id="s-refs">References</h2>
+        <div class="section-body">
+          <details class="fold fold-refs" open>
+            <summary>Five sources, checked against the originals on 2&nbsp;November&nbsp;2026 <span class="fold-meta" aria-hidden="true"></span></summary>
+            <div class="fold-body">
+          <ol class="refs">
+            <li id="ref-1"><span class="ref-num">[1]</span><span>L. Zheng, W.-L. Chiang, Y. Sheng, et&nbsp;al. <q>Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena.</q> <i>NeurIPS 2023 Datasets and Benchmarks Track.</i> <a href="https://arxiv.org/abs/2306.05685">arXiv:2306.05685</a>.</span></li>
+            <li id="ref-2"><span class="ref-num">[2]</span><span>E. T. Barr, M. Harman, P. McMinn, M. Shahbaz, S. Yoo. <q>The Oracle Problem in Software Testing: A Survey.</q> <i>IEEE Transactions on Software Engineering</i> 41(5):507–525, 2015. <a href="https://doi.org/10.1109/TSE.2014.2372785">doi:10.1109/TSE.2014.2372785</a>.</span></li>
+            <li id="ref-3"><span class="ref-num">[3]</span><span>H. He and Thinking Machines Lab. <q>Defeating Nondeterminism in LLM Inference.</q> <i>Thinking Machines Lab: Connectionism</i>, 10 September 2025. <a href="https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/">thinkingmachines.ai</a>.</span></li>
+            <li id="ref-4"><span class="ref-num">[4]</span><span>S. Shankar, J. D. Zamfirescu-Pereira, B. Hartmann, A. Parameswaran, I. Arawjo. <q>Who Validates the Validators? Aligning LLM-Assisted Evaluation of LLM Outputs with Human Preferences.</q> <i>UIST 2024.</i> <a href="https://doi.org/10.1145/3654777.3676450">doi:10.1145/3654777.3676450</a>.</span></li>
+            <li id="ref-5"><span class="ref-num">[5]</span><span>M. Cohn. <i>Succeeding with Agile: Software Development Using Scrum.</i> Addison-Wesley, 2009 (the <q>Test Automation Pyramid</q>). Summary: M. Fowler, <a href="https://martinfowler.com/bliki/TestPyramid.html"><q>TestPyramid</q></a>.</span></li>
+          </ol>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <footer class="page-turn">
+        <nav aria-label="Page turn">
+          <a class="turn" href="index.html"><span class="turn-dir">← Previous</span>Contents</a>
+          <a class="turn" href="part1-2-why-assertions-break.html"><span class="turn-dir">Next →</span>1.2 Why LLM outputs break assertions</a>
+        </nav>
+      </footer>
+      <p class="colophon">Set in Archivo, EB Garamond, and JetBrains Mono, each under the SIL Open Font License (see assets/fonts/). Works offline from file://.</p>
+    </article>
+  </div>
+</body>
+</html>
